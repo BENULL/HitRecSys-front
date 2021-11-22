@@ -1,5 +1,10 @@
 # hitrecsys-front
-
+the front page of HitRecSys 
+## Environment
+- Vue3
+- Typescript
+- Element-plus
+  
 ## Project setup
 ```
 npm install
