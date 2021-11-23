@@ -13,7 +13,7 @@ const dev: IConfig = {
     mock: false,
     title: "开发",
     baseUrl: "http://localhost:8080", // 项目地址
-    baseApi: "http://localhost:8081/hitrecsys", // 本地api请求地址,注意：如果你使用了代理，请设置成'/'
+    baseApi: "/api", // 本地api请求地址,注意：如果你使用了代理，请设置成'/'
     APPID: "wx123456778890",
     APPSECRET: "xxx"
 }

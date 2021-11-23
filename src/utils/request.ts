@@ -6,12 +6,12 @@ import axios, { AxiosResponse, AxiosRequestConfig } from "axios";
 import { ElMessage, ElLoading } from "element-plus"
 import { ILoadingInstance } from 'element-plus/lib/components/loading/src/loading.type' //导入ElLoading钩子
 
-let loading:ILoadingInstance
+let loading: ILoadingInstance
 
 const service = axios.create({
     baseURL: config.baseApi,
     timeout: 5000,
-    withCredentials: false, // send cookies when cross-domain requests
+    withCredentials: true, // send cookies when cross-domain requests
 })
 
 service.interceptors.request.use(
@@ -38,28 +38,24 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     async (response: AxiosResponse) => {
         loading.close()
-        if (response.data.status !== 0) {
-            return Promise.reject(new Error(response.data.msg || "Error"))
+        if (response.data.status === 0) {
+            return response
         } else {
-            return response.data
-            
+            ElMessage.warning(showStatus(response.data.status))
         }
+        return response
     },
     (error: any) => {
         loading.close()
-        if (error && error.response){
-            error.message = showStatus(error.response.status)
-        }else{
-            if (error.message == "Network Error") 
-                error.message = "网络异常，请稍后重试！"
-            else{
-                error.message = "连接到服务器失败，请联系管理员"
-            }
+        if (error && error.response) {
+            // 请求已发出但不在2xx范围
+            ElMessage.warning(showStatus(error.response.status))
+            return Promise.reject(error.response.data);
+        } else {
+            ElMessage.warning("网络连接异常,请稍后再试!")
         }
-        ElMessage.warning(error.message)
         // store.auth.clearAuth()
         // store.dispatch("clearAuth")
-        return Promise.reject(error)
     }
 )
 
