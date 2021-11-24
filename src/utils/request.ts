@@ -38,12 +38,12 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     async (response: AxiosResponse) => {
         loading.close()
-        if (response.data.status === 0) {
-            return response
-        } else {
+        if (response.data.status !== 0) {
             ElMessage.warning(showStatus(response.data.status))
+            return Promise.reject(response.data)
+        } else {
+            return response.data
         }
-        return response
     },
     (error: any) => {
         loading.close()

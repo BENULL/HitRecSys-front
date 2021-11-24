@@ -1,149 +1,25 @@
 <template>
-  <div>
-    <span class="category">Adventure</span>
+  <div v-for="(category, index) in categoryList" :key="index">
+    <span class="category">{{ category }}</span>
     <el-divider></el-divider>
-    <el-row>
+    <el-row v-if="status">
       <el-col
-        v-for="(o, index) in 5"
-        :key="o"
+        v-for="(movie, i) in moviesLists[index]"
+        :key="movie.movieId"
         :span="4"
-        :offset="index > 0 ? 1 : 0"
+        :offset="i > 0 ? 1 : 0"
       >
-        <el-card shadow="hover" :body-style="{ padding: '0px' }">
+        <el-card
+          shadow="hover"
+          :body-style="{ padding: '0px' }"
+          @click="clickCard(index, i, movie.movieId)"
+        >
           <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
+            :src="`/static/posters/${movie.movieId}.jpg`"
           />
           <div style="padding: 14px">
-            <span>Yummy hamburger</span>
-            <div class="bottom">
-              <el-button type="text" class="button">Operating</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
-  <div>
-    <span class="category">Drama</span>
-    <el-divider></el-divider>
-    <el-row>
-      <el-col
-        v-for="(o, index) in 5"
-        :key="o"
-        :span="4"
-        :offset="index > 0 ? 1 : 0"
-      >
-        <el-card shadow="hover" :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
-          <div style="padding: 14px">
-            <span>Yummy hamburger</span>
-            <div class="bottom">
-              <el-button type="text" class="button">Operating</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
-  <div>
-    <span class="category">Comedy</span>
-    <el-divider></el-divider>
-    <el-row>
-      <el-col
-        v-for="(o, index) in 5"
-        :key="o"
-        :span="4"
-        :offset="index > 0 ? 1 : 0"
-      >
-        <el-card shadow="hover" :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
-          <div style="padding: 14px">
-            <span>Yummy hamburger</span>
-            <div class="bottom">
-              <el-button type="text" class="button">Operating</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
-  <div>
-    <span class="category">Thriller</span>
-    <el-divider></el-divider>
-    <el-row>
-      <el-col
-        v-for="(o, index) in 5"
-        :key="o"
-        :span="4"
-        :offset="index > 0 ? 1 : 0"
-      >
-        <el-card shadow="hover" :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
-          <div style="padding: 14px">
-            <span>Yummy hamburger</span>
-            <div class="bottom">
-              <el-button type="text" class="button">Operating</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
-  <div>
-    <span class="category">Romance</span>
-    <el-divider></el-divider>
-    <el-row>
-      <el-col
-        v-for="(o, index) in 5"
-        :key="o"
-        :span="4"
-        :offset="index > 0 ? 1 : 0"
-      >
-        <el-card shadow="hover" :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
-          <div style="padding: 14px">
-            <span>Yummy hamburger</span>
-            <div class="bottom">
-              <el-button type="text" class="button">Operating</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
-  <div>
-    <span class="category">Action</span>
-    <el-divider></el-divider>
-    <el-row>
-      <el-col
-        v-for="(o, index) in 5"
-        :key="o"
-        :span="4"
-        :offset="index > 0 ? 1 : 0"
-      >
-        <el-card shadow="hover" :body-style="{ padding: '0px' }">
-          <img
-            src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-            class="image"
-          />
-          <div style="padding: 14px">
-            <span>Yummy hamburger</span>
-            <div class="bottom">
-              <el-button type="text" class="button">Operating</el-button>
-            </div>
+            <span>{{ movie.title }}</span>
+            <!-- <span>{{ movie.releaseYear }}</span> -->
           </div>
         </el-card>
       </el-col>
@@ -151,17 +27,71 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
+import { recMovieByGenre } from "@/api";
+import { MovieCardProps } from "@/store";
+export default defineComponent({
+  setup() {
+    let status = ref(false);
+    const moviesLists = ref([] as Array<Array<MovieCardProps>>);
+    const categoryList = [
+      "Adventure",
+      "Drama",
+      "Comedy",
+      "Thriller",
+      "Romance",
+      "Action",
+    ];
 
-export default defineComponent({});
+    onMounted(() => {
+      fetchMovieLists();
+      console.log("mounted");
+    });
+
+    // watch(moviesLists, ()=>{
+    //   nextTick(()=>{
+    //     console.log('watch')
+    //   });
+    // })
+
+    const clickCard = (catIndex: number, colIndex: number, movieId: number) => {
+      console.log(`click ${catIndex} ${colIndex} ${movieId}`);
+    };
+
+    const fetchMovieLists = () => {
+      // let res = [] as any[];
+      categoryList.map((category) => {
+        recMovieByGenre({
+          genre: category,
+          size: 5,
+          sortBy: "rating",
+        }).then((response) => {
+          console.log(response.data);
+          // res.push(response.data);
+          console.log(moviesLists.value);
+          moviesLists.value.push(response.data);
+        });
+      });
+      // moviesLists.value = res;
+      status.value = true;
+    };
+
+    return {
+      status,
+      categoryList,
+      moviesLists,
+      clickCard,
+    };
+  },
+});
 </script>
 <style lang="scss" scoped>
 .category {
-    font-size: 18px;
-    line-height: 1.5;
-    font-weight: bolder;
-    font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
-  'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: bolder;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 .el-divider {
   margin: 10px 0;
