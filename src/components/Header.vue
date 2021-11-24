@@ -7,12 +7,12 @@
       </div>
       <div class="header-search-container">
         <el-input
-          v-model="search_input"
+          v-model="searchInput"
           placeholder="input to search"
           clearable
         >
           <template #append>
-            <el-button type="info" plain
+            <el-button type="info" plain @click="searchClick"
               ><el-icon><Search /></el-icon
             ></el-button>
           </template>
@@ -23,11 +23,22 @@
 
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { Search } from "@element-plus/icons";
 
 export default defineComponent({
-  name: "h_header",
+  name: "GlobalHeader",
+  setup() {
+    const searchInput = ref('')
+    const searchClick = () => {
+      // TODO search function 
+      alert(searchInput.value)
+    }
+    return {
+      searchInput,
+      searchClick
+    }
+  },
   components: {
     Search,
   },
