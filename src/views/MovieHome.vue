@@ -12,14 +12,14 @@
         <el-card
           shadow="hover"
           :body-style="{ padding: '0px' }"
-          @click="clickCard(index, i, movie.movieId)"
+          @click="clickCard(movie.movieId)"
         >
           <img
             :src="`/static/posters/${movie.movieId}.jpg`"
           />
           <div style="padding: 14px">
-            <span>{{ movie.title }}</span>
-            <!-- <span>{{ movie.releaseYear }}</span> -->
+            <h4>{{ movie.title }}</h4>
+            <p>{{ movie.releaseYear }}</p>
           </div>
         </el-card>
       </el-col>
@@ -28,12 +28,14 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "vue";
+import { useRouter } from 'vue-router'
 import { recMovieByGenre } from "@/api";
-import { MovieCardProps } from "@/store";
+import { IMovieCardProps } from "@/type";
 export default defineComponent({
   setup() {
+    const router = useRouter()
     let status = ref(false);
-    const moviesLists = ref([] as Array<Array<MovieCardProps>>);
+    const moviesLists = ref([] as Array<Array<IMovieCardProps>>);
     const categoryList = [
       "Adventure",
       "Drama",
@@ -54,8 +56,9 @@ export default defineComponent({
     //   });
     // })
 
-    const clickCard = (catIndex: number, colIndex: number, movieId: number) => {
-      console.log(`click ${catIndex} ${colIndex} ${movieId}`);
+    const clickCard = (movieId: number) => {
+      console.log(`click ${movieId}`);
+      router.push({name:'movie', params:{id:movieId}})
     };
 
     const fetchMovieLists = () => {

@@ -11,3 +11,14 @@ export interface ILogin {
     /** 账户密码 */
     password: string;
 }
+
+export interface IMovieCardProps{
+    averageRating: number
+    genres: string[];
+    imdbId: string;
+    movieId: number;
+    ratingNumber: number;
+    releaseYear: number;
+    title: string;
+    tmdbId: string;
+}
